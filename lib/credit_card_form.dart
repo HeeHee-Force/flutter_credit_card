@@ -35,6 +35,7 @@ class CreditCardForm extends StatefulWidget {
     ),
     required this.formKey,
     this.cvvValidationMessage = 'Please input a valid CVV',
+    this.cardHolderValidationMessage = 'Por favor ingresar un nombre',
     this.dateValidationMessage = 'Please input a valid date',
     this.numberValidationMessage = 'Please input a valid number',
     this.isHolderNameVisible = true,
@@ -47,6 +48,7 @@ class CreditCardForm extends StatefulWidget {
   final String cardHolderName;
   final String cvvCode;
   final String cvvValidationMessage;
+  final String cardHolderValidationMessage;
   final String dateValidationMessage;
   final String numberValidationMessage;
   final void Function(CreditCardModel) onCreditCardModelChange;
@@ -80,14 +82,10 @@ class _CreditCardFormState extends State<CreditCardForm> {
   late void Function(CreditCardModel) onCreditCardModelChange;
   late CreditCardModel creditCardModel;
 
-  final MaskedTextController _cardNumberController =
-      MaskedTextController(mask: '0000 0000 0000 0000');
-  final TextEditingController _expiryDateController =
-      MaskedTextController(mask: '00/00');
-  final TextEditingController _cardHolderNameController =
-      TextEditingController();
-  final TextEditingController _cvvCodeController =
-      MaskedTextController(mask: '0000');
+  final MaskedTextController _cardNumberController = MaskedTextController(mask: '0000 0000 0000 0000');
+  final TextEditingController _expiryDateController = MaskedTextController(mask: '00/00');
+  final TextEditingController _cardHolderNameController = TextEditingController();
+  final TextEditingController _cvvCodeController = MaskedTextController(mask: '000');
 
   FocusNode cvvFocusNode = FocusNode();
   FocusNode expiryDateNode = FocusNode();
@@ -104,8 +102,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
     cardHolderName = widget.cardHolderName;
     cvvCode = widget.cvvCode;
 
-    creditCardModel = CreditCardModel(
-        cardNumber, expiryDate, cardHolderName, cvvCode, isCvvFocused);
+    creditCardModel = CreditCardModel(cardNumber, expiryDate, cardHolderName, cvvCode, isCvvFocused);
   }
 
   @override
@@ -212,8 +209,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                   child: Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      margin:
-                          const EdgeInsets.only(left: 16, top: 8, right: 16),
+                      margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
                       child: TextFormField(
                         controller: _expiryDateController,
                         cursorColor: widget.cursorColor ?? themeColor,
@@ -227,9 +223,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                         decoration: widget.expiryDateDecoration,
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
-                        autofillHints: const <String>[
-                          AutofillHints.creditCardExpirationDate
-                        ],
+                        autofillHints: const <String>[AutofillHints.creditCardExpirationDate],
                         validator: (String? value) {
                           if (value!.isEmpty) {
                             return widget.dateValidationMessage;
@@ -240,9 +234,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                           final int year = int.parse('20${date.last}');
                           final DateTime cardDate = DateTime(year, month);
 
-                          if (cardDate.isBefore(now) ||
-                              month > 12 ||
-                              month == 0) {
+                          if (cardDate.isBefore(now) || month > 12 || month == 0) {
                             return widget.dateValidationMessage;
                           }
                           return null;
@@ -273,12 +265,8 @@ class _CreditCardFormState extends State<CreditCardForm> {
                       ),
                       decoration: widget.cvvCodeDecoration,
                       keyboardType: TextInputType.number,
-                      textInputAction: widget.isHolderNameVisible
-                          ? TextInputAction.next
-                          : TextInputAction.done,
-                      autofillHints: const <String>[
-                        AutofillHints.creditCardSecurityCode
-                      ],
+                      textInputAction: widget.isHolderNameVisible ? TextInputAction.next : TextInputAction.done,
+                      autofillHints: const <String>[AutofillHints.creditCardSecurityCode],
                       onChanged: (String text) {
                         setState(() {
                           cvvCode = text;
@@ -314,6 +302,12 @@ class _CreditCardFormState extends State<CreditCardForm> {
                   onEditingComplete: () {
                     FocusScope.of(context).unfocus();
                     onCreditCardModelChange(creditCardModel);
+                  },
+                  validator: (String? value) {
+                    if (value!.isEmpty) {
+                      return widget.cardHolderValidationMessage;
+                    }
+                    return null;
                   },
                 ),
               ),
