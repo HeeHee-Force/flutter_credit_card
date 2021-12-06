@@ -133,7 +133,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
     _cardHolderNameController.addListener(() {
       setState(() {
-        cardHolderName = _cardHolderNameController.text;
+        cardHolderName = _cardHolderNameController.text.toUpperCase();
         creditCardModel.cardHolderName = cardHolderName;
         onCreditCardModelChange(creditCardModel);
       });
