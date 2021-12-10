@@ -84,7 +84,8 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
   final MaskedTextController _cardNumberController = MaskedTextController(mask: '0000 0000 0000 0000');
   final TextEditingController _expiryDateController = MaskedTextController(mask: '00/00');
-  final TextEditingController _cardHolderNameController = MaskedTextController(mask: 'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS'); //TextEditingController();
+  final TextEditingController _cardHolderNameController =
+      MaskedTextController(mask: 'SSSSSSSSSSSSSSSSSSSSSSSSSS'); //ISO/IEC 7813 TextEditingController();
   final TextEditingController _cvvCodeController = MaskedTextController(mask: '000');
 
   FocusNode cvvFocusNode = FocusNode();
