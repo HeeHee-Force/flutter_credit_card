@@ -84,7 +84,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
   final MaskedTextController _cardNumberController = MaskedTextController(mask: '0000 0000 0000 0000');
   final TextEditingController _expiryDateController = MaskedTextController(mask: '00/00');
-  final TextEditingController _cardHolderNameController = TextEditingController();
+  final TextEditingController _cardHolderNameController = MaskedTextController(mask: 'S*'); //TextEditingController();
   final TextEditingController _cvvCodeController = MaskedTextController(mask: '000');
 
   FocusNode cvvFocusNode = FocusNode();
@@ -134,7 +134,8 @@ class _CreditCardFormState extends State<CreditCardForm> {
     _cardHolderNameController.addListener(() {
       setState(() {
         cardHolderName = _cardHolderNameController.text.toUpperCase();
-        creditCardModel.cardHolderName = cardHolderName;
+        _cardHolderNameController.text = _cardHolderNameController.text.toUpperCase();
+        creditCardModel.cardHolderName = cardHolderName.toUpperCase();
         onCreditCardModelChange(creditCardModel);
       });
     });
