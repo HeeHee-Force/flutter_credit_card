@@ -355,7 +355,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                   onCreditCardModelChange(creditCardModel);
                 },
                 validator: (String? value) {
-                  if (value!.isEmpty || value.length < 9) {
+                  if (value!.isEmpty || value.length < 12) {
                     return widget.cardHolderIDValidationMessage;
                   }
 
