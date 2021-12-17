@@ -646,6 +646,7 @@ class MaskedTextController extends TextEditingController {
     return <String, RegExp>{
       'A': RegExp(r'[A-Za-z]'),
       'S': RegExp(r'[A-Za-z ñÑ]+$'),
+      'K': RegExp(r'[0-9 kK]+$'),
       '0': RegExp(r'[0-9]'),
       '@': RegExp(r'[A-Za-z0-9]'),
       '*': RegExp(r'.*')
