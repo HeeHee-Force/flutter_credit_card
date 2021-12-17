@@ -62,8 +62,7 @@ class MySampleState extends State<MySample> {
                   height: 30,
                 ),
                 CreditCardWidget(
-                  glassmorphismConfig:
-                      useGlassMorphism ? Glassmorphism.defaultConfig() : null,
+                  glassmorphismConfig: useGlassMorphism ? Glassmorphism.defaultConfig() : null,
                   cardNumber: cardNumber,
                   expiryDate: expiryDate,
                   cardHolderName: cardHolderName,
@@ -73,8 +72,7 @@ class MySampleState extends State<MySample> {
                   obscureCardCvv: true,
                   isHolderNameVisible: true,
                   cardBgColor: Colors.red,
-                  backgroundImage:
-                      useBackgroundImage ? 'assets/card_bg.png' : null,
+                  backgroundImage: useBackgroundImage ? 'assets/card_bg.png' : null,
                   isSwipeGestureEnabled: true,
                   onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
                   customCardTypeIcons: <CustomCardTypeIcon>[
@@ -97,6 +95,7 @@ class MySampleState extends State<MySample> {
                           obscureCvv: true,
                           obscureNumber: true,
                           cardNumber: cardNumber,
+                          cardHolderID: '123456789',
                           cvvCode: cvvCode,
                           isHolderNameVisible: true,
                           isCardNumberVisible: true,

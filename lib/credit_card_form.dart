@@ -11,6 +11,7 @@ class CreditCardForm extends StatefulWidget {
     required this.cardNumber,
     required this.expiryDate,
     required this.cardHolderName,
+    required this.cardHolderID,
     required this.cvvCode,
     this.obscureCvv = false,
     this.obscureNumber = false,
@@ -20,6 +21,10 @@ class CreditCardForm extends StatefulWidget {
     this.cursorColor,
     this.cardHolderDecoration = const InputDecoration(
       labelText: 'Card holder',
+    ),
+    this.cardHolderIDDecoration = const InputDecoration(
+      labelText: 'Número de documento del tarjetahabiente',
+      hintText: '00.000.000-k',
     ),
     this.cardNumberDecoration = const InputDecoration(
       labelText: 'Card number',
@@ -35,7 +40,8 @@ class CreditCardForm extends StatefulWidget {
     ),
     required this.formKey,
     this.cvvValidationMessage = 'Please input a valid CVV',
-    this.cardHolderValidationMessage = 'Por favor ingresar un nombre',
+    this.cardHolderValidationMessage = 'Por favor ingresar el nombre en la tarjeta',
+    this.cardHolderIDValidationMessage = 'Número de documento del tarjetahabiente',
     this.dateValidationMessage = 'Please input a valid date',
     this.numberValidationMessage = 'Please input a valid number',
     this.isHolderNameVisible = true,
@@ -46,9 +52,11 @@ class CreditCardForm extends StatefulWidget {
   final String cardNumber;
   final String expiryDate;
   final String cardHolderName;
+  final String cardHolderID;
   final String cvvCode;
   final String cvvValidationMessage;
   final String cardHolderValidationMessage;
+  final String cardHolderIDValidationMessage;
   final String dateValidationMessage;
   final String numberValidationMessage;
   final void Function(CreditCardModel) onCreditCardModelChange;
@@ -64,6 +72,7 @@ class CreditCardForm extends StatefulWidget {
 
   final InputDecoration cardNumberDecoration;
   final InputDecoration cardHolderDecoration;
+  final InputDecoration cardHolderIDDecoration;
   final InputDecoration expiryDateDecoration;
   final InputDecoration cvvCodeDecoration;
 
@@ -75,6 +84,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
   late String cardNumber;
   late String expiryDate;
   late String cardHolderName;
+  late String cardHolderID;
   late String cvvCode;
   bool isCvvFocused = false;
   late Color themeColor;
@@ -86,11 +96,13 @@ class _CreditCardFormState extends State<CreditCardForm> {
   final TextEditingController _expiryDateController = MaskedTextController(mask: '00/00');
   final TextEditingController _cardHolderNameController =
       MaskedTextController(mask: 'SSSSSSSSSSSSSSSSSSSSSSSSSS'); //ISO/IEC 7813 TextEditingController();
+  final TextEditingController _cardHolderIDController = MaskedTextController(mask: '00.000.000-S');
   final TextEditingController _cvvCodeController = MaskedTextController(mask: '000');
 
   FocusNode cvvFocusNode = FocusNode();
   FocusNode expiryDateNode = FocusNode();
   FocusNode cardHolderNode = FocusNode();
+  FocusNode cardHolderIDNode = FocusNode();
 
   void textFieldFocusDidChange() {
     creditCardModel.isCvvFocused = cvvFocusNode.hasFocus;
@@ -100,10 +112,11 @@ class _CreditCardFormState extends State<CreditCardForm> {
   void createCreditCardModel() {
     cardNumber = widget.cardNumber;
     expiryDate = widget.expiryDate;
+    cardHolderID = widget.cardHolderID;
     cardHolderName = widget.cardHolderName;
     cvvCode = widget.cvvCode;
 
-    creditCardModel = CreditCardModel(cardNumber, expiryDate, cardHolderName, cvvCode, isCvvFocused);
+    creditCardModel = CreditCardModel(cardNumber, expiryDate, cardHolderName, cardHolderID, cvvCode, isCvvFocused);
   }
 
   @override
@@ -141,6 +154,15 @@ class _CreditCardFormState extends State<CreditCardForm> {
       });
     });
 
+    _cardHolderIDController.addListener(() {
+      setState(() {
+        cardHolderID = _cardHolderIDController.text;
+        _cardHolderNameController.text = _cardHolderNameController.text;
+        creditCardModel.cardHolderID = cardHolderID;
+        onCreditCardModelChange(creditCardModel);
+      });
+    });
+
     _cvvCodeController.addListener(() {
       setState(() {
         cvvCode = _cvvCodeController.text;
@@ -153,6 +175,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
   @override
   void dispose() {
     cardHolderNode.dispose();
+    cardHolderIDNode.dispose();
     cvvFocusNode.dispose();
     expiryDateNode.dispose();
     super.dispose();
@@ -312,6 +335,32 @@ class _CreditCardFormState extends State<CreditCardForm> {
                     return null;
                   },
                 ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
+              child: TextFormField(
+                controller: _cardHolderIDController,
+                cursorColor: widget.cursorColor ?? themeColor,
+                focusNode: cardHolderIDNode,
+                style: TextStyle(
+                  color: widget.textColor,
+                ),
+                decoration: widget.cardHolderIDDecoration,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                autofillHints: const <String>[AutofillHints.creditCardName],
+                onEditingComplete: () {
+                  FocusScope.of(context).unfocus();
+                  onCreditCardModelChange(creditCardModel);
+                },
+                validator: (String? value) {
+                  if (value!.isEmpty) {
+                    return widget.cardHolderIDValidationMessage;
+                  }
+                  return null;
+                },
               ),
             ),
           ],
